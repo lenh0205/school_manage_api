@@ -283,7 +283,7 @@ namespace DataInfastructure.Migrations
             modelBuilder.Entity("DataInfastructure.Model.Student", b =>
                 {
                     b.HasOne("DataInfastructure.Model.Class", "Class")
-                        .WithMany("Students")
+                        .WithMany()
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -327,11 +327,6 @@ namespace DataInfastructure.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("DataInfastructure.Model.Class", b =>
-                {
-                    b.Navigation("Students");
                 });
 #pragma warning restore 612, 618
         }
