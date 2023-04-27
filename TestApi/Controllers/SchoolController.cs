@@ -1,5 +1,6 @@
 ﻿using DataInfastructure;
 using DataInfastructure.Model;
+using DataInfastructure.Responsitory;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,7 +11,7 @@ using TestApi.Auth;
 
 namespace TestApi.Controllers
 {
-    [ApiController] 
+    [ApiController]
     [Route("api/[controller]")]
     public class SchoolController : ControllerBase
     {
@@ -21,12 +22,13 @@ namespace TestApi.Controllers
         }
 
         /// <summary>
-        /// GetClasses
+        /// Post
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
         [HttpPost("Class/GetItems")]
-        public IActionResult GetClasses([FromBody]List<Guid> ids)
+        [Authorize(Roles = UserRoles.User)]
+        public IActionResult GetClasses([FromBody] List<Guid> ids)
         {
             List<Class> classes = _unitOfWork.ClassRepository.GetByIds(ids);
             return Ok(classes);
@@ -38,11 +40,40 @@ namespace TestApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Class/GetItem/{id}")]
-        [Authorize(Roles = UserRoles.User)]
         public IActionResult Get(Guid id)
         {
-            Class c = _unitOfWork.ClassRepository.GetById(id);
-            return Ok(c);
+            try
+            {
+                Class c = _unitOfWork.ClassRepository.GetById(id);
+
+                if (c == null) return NotFound();
+                return Ok(c);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// GetClasses
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("Class/GetAll")]
+        public IActionResult GetAll(string page)
+        {
+            try
+            {
+                ResponseItems<Class> allClassAndPage = _unitOfWork.ClassRepository.GetAll(page);
+
+                if (allClassAndPage.ClassList == null || allClassAndPage.ClassList.Count == 0) 
+                    return NotFound(); // return HTTP 404 if no classes found
+                return Ok(allClassAndPage); // return HTTP 200 with classes data
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message); // return HTTP 500 with error message
+            }
         }
 
         /// <summary>
@@ -53,26 +84,48 @@ namespace TestApi.Controllers
         [HttpPost("Class/Create")]
         public IActionResult CreateClass([FromBody] Class c)
         {
-            Console.WriteLine("test c name: {0}",c);
-            _unitOfWork.ClassRepository.Add(c);
-            _unitOfWork.Save();
-            return Ok(c);
+            try
+            {
+                _unitOfWork.ClassRepository.Add(c);
+                _unitOfWork.Save();
+                return Ok(c);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<SchoolController>/5
         [HttpPut("Class/Update/{id}")]
-        public IActionResult Put([FromBody] Class c)
+        public IActionResult Put(Guid id,[FromBody] Class c)
         {
-            Class updatedClass = _unitOfWork.ClassRepository.Update(c);
-            return Ok(updatedClass);
+            try
+            {
+                _unitOfWork.ClassRepository.Update(id, c);
+                _unitOfWork.Save();
+                return Ok(c);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // DELETE api/<SchoolController>/5
         [HttpDelete("Class/Delete/{id}")]
         public IActionResult Delete(Guid id)
         {
-            bool status = _unitOfWork.ClassRepository.Delete(id);
-            return Ok(status);
+            try
+            {
+                bool status = _unitOfWork.ClassRepository.Delete(id);
+                _unitOfWork.Save();
+
+                return Ok(status);
+            } catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

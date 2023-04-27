@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "kFJB7vMUFC0Prqe+yWXupHXLEBIrOMB0lfOTzAAp71Ha4DspE1chx1OlZ7VHy2Yp8ddROrjCNxzNRrgXL8lNgg==",
+  "dgSpecHash": "ByoEAOVmZ8PmaWC1QK+euT/Qik0LjPOHdx16KMD2xeo3lqOlEgFE3xIROZnxq3krTVe8DvB9yaJtHanMOlP/Rw==",
   "success": true,
-  "projectFilePath": "D:\\DotNet\\TestApi\\TestApi\\TestApi.csproj",
+  "projectFilePath": "D:\\DotNet\\TestApi\\TestApi\\ManageSchoolApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LenhTC\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\LenhTC\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

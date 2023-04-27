@@ -11201,9 +11201,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\DotNet\\TestApi\\TestApi\\TestApi.csproj",
-      "projectName": "TestApi",
-      "projectPath": "D:\\DotNet\\TestApi\\TestApi\\TestApi.csproj",
+      "projectUniqueName": "D:\\DotNet\\TestApi\\TestApi\\ManageSchoolApi.csproj",
+      "projectName": "ManageSchoolApi",
+      "projectPath": "D:\\DotNet\\TestApi\\TestApi\\ManageSchoolApi.csproj",
       "packagesPath": "C:\\Users\\LenhTC\\.nuget\\packages\\",
       "outputPath": "D:\\DotNet\\TestApi\\TestApi\\obj\\",
       "projectStyle": "PackageReference",

@@ -8,11 +8,11 @@ namespace DataInfastructure.Model
     {
         [ForeignKey("Class")]
         public Guid ClassId { get; set; }
-        public Class Class { get; set; }
+        public virtual Class Class { get; set; }
 
         [ForeignKey("Teacher")]
         public Guid TeacherId { get; set; }
-        public Teacher Teacher { get; set; }
+        public virtual Teacher Teacher { get; set; }
 
 
         public bool IsHeadTeacher { get; set; }

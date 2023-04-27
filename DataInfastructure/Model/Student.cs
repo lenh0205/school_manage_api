@@ -8,7 +8,7 @@ namespace DataInfastructure.Model
     {
         [ForeignKey("Class")]
         public Guid ClassId { get; set; }
-        public Class Class { get; set; }
+        public virtual Class Class { get; set; }
 
         public bool IsClassMonitor { get; set; }
     }

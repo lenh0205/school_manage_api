@@ -8,7 +8,7 @@ using TestApi.Auth;
 
 #nullable disable
 
-namespace TestApi.Migrations
+namespace ManageSchoolApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot

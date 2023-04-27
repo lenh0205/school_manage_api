@@ -1,0 +1,23 @@
+{
+  "Version": 1,
+  "Hash": "BhVHReAV1U4ADQ1+EjUwrs7YZQ3RZi77kSkpS9uGQ5w=",
+  "Source": "ManageSchoolApi",
+  "BasePath": "_content/ManageSchoolApi",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "D:\\DotNet\\TestApi\\DataInfastructure\\DataInfastructure.csproj",
+      "Version": 2,
+      "Source": "DataInfastructure",
+      "GetPublishAssetsTargets": "ComputeReferencedStaticWebAssetsPublishManifest;GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Release;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Release;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework"
+    }
+  ],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
