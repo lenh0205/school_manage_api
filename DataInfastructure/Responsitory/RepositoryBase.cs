@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using DataInfastructure.Interface;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace DataInfastructure.Responsitory
 {
@@ -38,7 +40,7 @@ namespace DataInfastructure.Responsitory
             //var c = _context.Set<T>().FirstOrDefault(c => c.Id == id);
             var c = _context.Set<T>().SingleOrDefault(c => c.Id == id);
             return c;
-        } 
+        }
 
         public List<T> GetByIds(List<Guid> ids)
         {
@@ -46,7 +48,7 @@ namespace DataInfastructure.Responsitory
             return cList;
         }
 
-        public ResponseItems<T> GetAll(string page)
+        public ResponseItems<T> GetWithPagination (string page)
         {
             int.TryParse(page, out int pageNumber);
             const int pageSize = 3;
@@ -58,10 +60,16 @@ namespace DataInfastructure.Responsitory
                 .ToList();
 
             int totalItems = _context.Set<T>().ToList().Count();
-            int totalPages = (int) Math.Ceiling((double) totalItems / pageSize);
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-            var data = new ResponseItems<T> { ClassList = cList, TotalPages = totalPages};
+            var data = new ResponseItems<T> { ClassList = cList, TotalPages = totalPages };
             return data;
+        }
+
+        public async Task<List<T>>  GetAll ()
+        {
+            List<T> cList = await _context.Set<T>().ToListAsync();
+            return cList;
         }
 
         public T Update(Guid id, T c)
