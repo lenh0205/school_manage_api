@@ -57,13 +57,13 @@ namespace DataInfastructure.Responsitory
             return cList;
         }
 
-        public ResponseItems<T> GetWithPagination (string page)
+        public ResponseItems<T> GetWithPagination(string page)
         {
             int.TryParse(page, out int pageNumber);
             const int pageSize = 3;
 
             List<T> cList = _context.Set<T>()
-                .OrderBy(c => c.Name)
+                .OrderBy(c => c.CreatedDate)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -75,12 +75,12 @@ namespace DataInfastructure.Responsitory
             return data;
         }
 
-        public async Task<List<T>>  GetAll ()
+        public async Task<List<T>> GetAll()
         {
             List<T> cList = await _context.Set<T>().ToListAsync();
             return cList;
         }
-        public ResponseItems<T> GetFinalClassAndPage ()
+        public ResponseItems<T> GetFinalClassAndPage()
         {
             const int pageSize = 3;
 
@@ -88,7 +88,7 @@ namespace DataInfastructure.Responsitory
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
             List<T> cList = _context.Set<T>()
-                .OrderBy(c => c.Name)
+                .OrderByDescending(c => c.CreatedDate)
                 .Skip((totalPages - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
