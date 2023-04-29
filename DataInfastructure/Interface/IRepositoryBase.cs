@@ -12,6 +12,7 @@ namespace DataInfastructure.Interface
         public List<T> GetByIds(List<Guid> ids);
         public ResponseItems<T> GetWithPagination(string page);
         public Task<List<T>> GetAll();
+        public ResponseItems<T> GetFinalClassAndPage();
         public T Add(T c);
         public T Update(Guid id, T c);
         public bool Delete(Guid id);

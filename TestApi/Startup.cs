@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using ManageSchoolApi.Chat;
+using ManageSchoolApi.Realtime;
 
 namespace TestApi
 {
@@ -36,14 +38,17 @@ namespace TestApi
             // CORs Policy:
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(builder =>
-                {
-                    builder.WithOrigins("http://localhost:3000")
-                           .AllowAnyHeader()
-                           .AllowAnyMethod();
-                });
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:3000")
+                               .AllowAnyHeader()
+                               .AllowAnyMethod()
+                               .AllowCredentials(); // For signalR - https://localhost:44369/chatHub
+                    });
             });
 
+            services.AddSignalR();
             // Unit Of Work
             services.AddTransient<ISchoolUnitOfWork, SchoolUnitOfWork>();
 
@@ -118,7 +123,7 @@ namespace TestApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors();
+            app.UseCors("AllowAllOrigins");
 
             if (env.IsDevelopment())
             {
@@ -142,6 +147,13 @@ namespace TestApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                // Real time chat - SignalR
+                endpoints.MapHub<ClassHub>("/classHub");
+                endpoints.MapGet("/", async context =>
+                {
+                    await context.Response.WriteAsync("Hello World!");
+                });
             });
 
             app.Run(async (context) =>

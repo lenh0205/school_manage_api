@@ -3,13 +3,17 @@ using DataInfastructure.Model;
 using DataInfastructure.Responsitory;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using ManageSchoolApi.Realtime;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using TestApi.Auth;
@@ -23,9 +27,12 @@ namespace TestApi.Controllers
     public class SchoolController : ControllerBase
     {
         private ISchoolUnitOfWork _unitOfWork;
-        public SchoolController(ISchoolUnitOfWork unitOfWork)
+        private readonly IHubContext<ClassHub> _classHubContext;
+
+        public SchoolController(ISchoolUnitOfWork unitOfWork, IHubContext<ClassHub> classHubContext)
         {
             _unitOfWork = unitOfWork;
+            _classHubContext = classHubContext;
         }
 
         /// <summary>
@@ -35,7 +42,7 @@ namespace TestApi.Controllers
         /// <returns></returns>
         [HttpPost("Class/GetItems")]
         [Authorize(Roles = UserRoles.User)]
-        public IActionResult GetClasses([FromBody] List<Guid> ids)
+        public IActionResult GetClassWithListId([FromBody] List<Guid> ids)
         {
             List<Class> classes = _unitOfWork.ClassRepository.GetByIds(ids);
             return Ok(classes);
@@ -47,7 +54,7 @@ namespace TestApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("Class/GetItem/{id}")]
-        public IActionResult Get(Guid id)
+        public IActionResult GetOneClass(Guid id)
         {
             try
             {
@@ -67,7 +74,7 @@ namespace TestApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("Class/GetAll")]
-        public IActionResult GetAll(string page)
+        public IActionResult GetWithPagination(string page)
         {
             try
             {
@@ -103,9 +110,30 @@ namespace TestApi.Controllers
             }
         }
 
+        [HttpPost("Class/CreateR")]
+        public async Task<IActionResult> CreateClassR([FromBody] Class c)
+        {
+            try
+            {
+                _unitOfWork.ClassRepository.Add(c);
+                _unitOfWork.Save();
+
+                ResponseItems<Class> finalClassAndPage = _unitOfWork.ClassRepository.GetFinalClassAndPage();
+
+                // Send a SignalR message to all connected clients
+                await _classHubContext.Clients.All.SendAsync("ReceiveNewClass", finalClassAndPage);
+
+                return Ok(c);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // PUT api/<SchoolController>/5
         [HttpPut("Class/Update/{id}")]
-        public IActionResult Put(Guid id, [FromBody] Class c)
+        public IActionResult UpdateCurrentClass(Guid id, [FromBody] Class c)
         {
             try
             {
@@ -135,6 +163,48 @@ namespace TestApi.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        //[HttpPost("Class/Upload")]
+        //public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+        //{
+        //    using var stream = new MemoryStream();
+        //    await file.CopyToAsync(stream);
+        //    using var package = new ExcelPackage(stream);
+
+        //    var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+        //    if (worksheet == null)
+        //    {
+        //        return BadRequest("Excel file does not contain any worksheet.");
+        //    }
+
+        //    var classes = new List<Class>();
+        //    for (var row = 2; row <= worksheet.Dimension.Rows; row++)
+        //    {
+        //        var name = worksheet.Cells[row, 1].Value?.ToString();
+        //        var description = worksheet.Cells[row, 2].Value?.ToString();
+        //        if (!string.IsNullOrEmpty(name))
+        //        {
+        //            var @class = new Class
+        //            {
+        //                Id = Guid.NewGuid(),
+        //                Name = name,
+        //                Description = description,
+        //                CreatedDate = DateTime.UtcNow,
+        //                UpdatedDate = DateTime.UtcNow,
+        //                CreatedByUserId = Guid.Empty,
+        //                UpdatedByUserId = Guid.Empty,
+        //            };
+        //            classes.Add(@class);
+        //        }
+        //    }
+
+        //    // Save the classes to the database
+        //    //await _dbContext.Classes.AddRangeAsync(classes);
+        //    //await _dbContext.SaveChangesAsync();
+        //    //await _unitOfWork.ClassRepository.Add();
+
+        //    return Ok();
+        //}
 
         [HttpGet("Class/pdf-class-list")]
         public async Task<IActionResult> ExportPdfClassList()

@@ -71,6 +71,21 @@ namespace DataInfastructure.Responsitory
             List<T> cList = await _context.Set<T>().ToListAsync();
             return cList;
         }
+        public ResponseItems<T> GetFinalClassAndPage ()
+        {
+            const int pageSize = 3;
+
+            int totalItems = _context.Set<T>().ToList().Count();
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            List<T> cList = _context.Set<T>()
+                .OrderBy(c => c.Name)
+                .Skip((totalPages - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            var data = new ResponseItems<T> { ClassList = cList, TotalPages = totalPages };
+            return data;
+        }
 
         public T Update(Guid id, T c)
         {
