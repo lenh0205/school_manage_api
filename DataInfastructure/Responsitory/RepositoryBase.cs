@@ -26,6 +26,15 @@ namespace DataInfastructure.Responsitory
             return c;
         }
 
+        public async Task<List<T>> AddList(List<T> cList)
+        {
+            if (cList == null)
+                return null;
+            await _context.Set<T>().AddRangeAsync(cList);
+            return cList;
+        }
+
+
         public bool Delete(Guid id)
         {
             var item = GetById(id);

@@ -14,6 +14,7 @@ namespace DataInfastructure.Interface
         public Task<List<T>> GetAll();
         public ResponseItems<T> GetFinalClassAndPage();
         public T Add(T c);
+        public Task<List<T>> AddList(List<T> cList);
         public T Update(Guid id, T c);
         public bool Delete(Guid id);
     }

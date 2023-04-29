@@ -164,47 +164,45 @@ namespace TestApi.Controllers
             }
         }
 
-        //[HttpPost("Class/Upload")]
-        //public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
-        //{
-        //    using var stream = new MemoryStream();
-        //    await file.CopyToAsync(stream);
-        //    using var package = new ExcelPackage(stream);
+        [HttpPost("Class/Upload")]
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile file)
+        {
+            using var stream = new MemoryStream();
+            await file.CopyToAsync(stream);
+            using var package = new ExcelPackage(stream);
 
-        //    var worksheet = package.Workbook.Worksheets.FirstOrDefault();
-        //    if (worksheet == null)
-        //    {
-        //        return BadRequest("Excel file does not contain any worksheet.");
-        //    }
+            var worksheet = package.Workbook.Worksheets.FirstOrDefault();
+            if (worksheet == null)
+            {
+                return BadRequest("Excel file does not contain any worksheet.");
+            }
 
-        //    var classes = new List<Class>();
-        //    for (var row = 2; row <= worksheet.Dimension.Rows; row++)
-        //    {
-        //        var name = worksheet.Cells[row, 1].Value?.ToString();
-        //        var description = worksheet.Cells[row, 2].Value?.ToString();
-        //        if (!string.IsNullOrEmpty(name))
-        //        {
-        //            var @class = new Class
-        //            {
-        //                Id = Guid.NewGuid(),
-        //                Name = name,
-        //                Description = description,
-        //                CreatedDate = DateTime.UtcNow,
-        //                UpdatedDate = DateTime.UtcNow,
-        //                CreatedByUserId = Guid.Empty,
-        //                UpdatedByUserId = Guid.Empty,
-        //            };
-        //            classes.Add(@class);
-        //        }
-        //    }
+            var classes = new List<Class>();
+            for (var row = 2; row <= worksheet.Dimension.Rows; row++)
+            {
+                var name = worksheet.Cells[row, 1].Value?.ToString();
+                var description = worksheet.Cells[row, 2].Value?.ToString();
+                if (!string.IsNullOrEmpty(name))
+                {
+                    var @class = new Class
+                    {
+                        Id = Guid.NewGuid(),
+                        Name = name,
+                        Description = description,
+                        CreatedDate = DateTime.UtcNow,
+                        UpdatedDate = DateTime.UtcNow,
+                        CreatedByUserId = Guid.Empty,
+                        UpdatedByUserId = Guid.Empty,
+                    };
+                    classes.Add(@class);
+                }
+            }
 
-        //    // Save the classes to the database
-        //    //await _dbContext.Classes.AddRangeAsync(classes);
-        //    //await _dbContext.SaveChangesAsync();
-        //    //await _unitOfWork.ClassRepository.Add();
+            await _unitOfWork.ClassRepository.AddList(classes);
+            _unitOfWork.Save();
 
-        //    return Ok();
-        //}
+            return Ok();
+        }
 
         [HttpGet("Class/pdf-class-list")]
         public async Task<IActionResult> ExportPdfClassList()
