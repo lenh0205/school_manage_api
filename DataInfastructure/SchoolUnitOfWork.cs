@@ -1,5 +1,4 @@
-﻿using DataInfastructure.IResponsitory;
-using DataInfastructure.Model;
+﻿ using DataInfastructure.Interface;
 using DataInfastructure.Responsitory;
 using System;
 
@@ -125,9 +124,10 @@ namespace DataInfastructure
             }
         }
 
-        public void Save()
+        public int Save()
         {
-            _context.SaveChanges();
+            var result = _context.SaveChanges();
+            return result;
         }
 
         private bool disposed = false;

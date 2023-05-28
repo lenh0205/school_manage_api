@@ -1,11 +1,23 @@
 {
   "Version": 1,
-  "Hash": "o2GDcH0XDgDjjGjmzg23Djynqu2uSaqYovjSJzoGovA=",
+  "Hash": "NG5VGl77GXbb4nRRN37DlcX5UAvq+VswJAan+SjVEFw=",
   "Source": "DataInfastructure",
   "BasePath": "_content/DataInfastructure",
   "Mode": "Default",
   "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "D:\\DotNet\\TestApi\\Common\\Common.csproj",
+      "Version": 2,
+      "Source": "Common",
+      "GetPublishAssetsTargets": "ComputeReferencedStaticWebAssetsPublishManifest;GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework"
+    }
+  ],
   "DiscoveryPatterns": [],
   "Assets": []
 }

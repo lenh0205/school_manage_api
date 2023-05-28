@@ -1,4 +1,4 @@
-﻿using DataInfastructure.IResponsitory;
+﻿using DataInfastructure.Interface;
 using System;
 
 namespace DataInfastructure
@@ -14,6 +14,6 @@ namespace DataInfastructure
         public IUserRepository UserRepository { get; }
         public IUserRoleMappingRepository UserRoleMappingRepository { get; }
 
-        public void Save();
+        public int Save();
     }
 }

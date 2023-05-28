@@ -1,4 +1,4 @@
-﻿using DataInfastructure.IResponsitory;
+﻿using DataInfastructure.Interface;
 using DataInfastructure.Model;
 using System;
 using System.Collections.Generic;

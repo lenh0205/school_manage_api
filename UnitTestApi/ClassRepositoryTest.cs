@@ -1,4 +1,5 @@
-﻿using DataInfastructure.Model;
+﻿using DataInfastructure;
+using DataInfastructure.Model;
 using DataInfastructure.Responsitory;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -8,7 +9,7 @@ namespace UnitTestApi
     public class ClassRepositoryTest
     {
         [Fact]
-        public void Add_Class_Success ()
+        public async void Add_Class_Success ()
         {
             // Arrange
            
@@ -27,7 +28,7 @@ namespace UnitTestApi
             var classRepository = new ClassRepository(new SchoolDBContext(options));
 
             // Act
-            var createdClass = classRepository.Add(new Class() { Name = "zed" });
+            var createdClass = await classRepository.Add(new Class() { Name = "zed" });
 
             // Assert
             Assert.NotNull(createdClass);

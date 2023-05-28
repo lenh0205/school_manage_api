@@ -1,9 +1,8 @@
-﻿using DataInfastructure.Interface;
-using DataInfastructure.Model;
+﻿using DataInfastructure.Model;
 using System;
 using System.Collections.Generic;
 
-namespace DataInfastructure.IResponsitory
+namespace DataInfastructure.Interface
 {
     public interface IClassRepository : IRepositoryBase<Class>
     {

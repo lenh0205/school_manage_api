@@ -5,6 +5,7 @@ using System;
 using DataInfastructure.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Common.ViewModel;
 
 namespace DataInfastructure.Responsitory
 {
@@ -17,7 +18,7 @@ namespace DataInfastructure.Responsitory
         }
 
 
-        public T Add(T c)
+        public async Task<T> Add(T c)
         {
             if (c == null)
                 return null;
@@ -51,13 +52,14 @@ namespace DataInfastructure.Responsitory
             return c;
         }
 
-        public List<T> GetByIds(List<Guid> ids)
+
+        public async Task<List<T>> GetByIds(List<Guid> ids)
         {
-            var cList = _context.Set<T>().Where(x => ids.Contains(x.Id)).ToList();
+            var cList = await _context.Set<T>().Where(x => ids.Contains(x.Id)).ToListAsync();
             return cList;
         }
 
-        public ResponseItems<T> GetWithPagination(string page)
+        public async Task<ResponseItems<T>> GetWithPagination(string page)
         {
             int.TryParse(page, out int pageNumber);
             const int pageSize = 3;
@@ -68,8 +70,29 @@ namespace DataInfastructure.Responsitory
                 .Take(pageSize)
                 .ToList();
 
-            int totalItems = _context.Set<T>().ToList().Count();
-            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            List<T> listItems = await _context.Set<T>().ToListAsync();
+            int totalItems = listItems.Count();
+            int totalPages = (int)Math.Ceiling((double) totalItems / pageSize);
+
+            var data = new ResponseItems<T> { ClassList = cList, TotalPages = totalPages };
+            return data;
+        }
+
+        public async Task<ResponseItems<T>> GetWithPagination(FilterBase filter)
+        {
+            // filter
+            var filterData = _context.Set<T>().Where(x => x.Name.ToUpper().Contains(filter.Name.ToUpper()));
+
+            // Paging
+            List<T> cList = filterData
+                .OrderBy(c => c.CreatedDate)
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToList();
+
+            List<T> listItems = await _context.Set<T>().ToListAsync();
+            int totalItems = listItems.Count();
+            int totalPages = (int)Math.Ceiling((double)totalItems / filter.PageSize);
 
             var data = new ResponseItems<T> { ClassList = cList, TotalPages = totalPages };
             return data;
@@ -80,7 +103,8 @@ namespace DataInfastructure.Responsitory
             List<T> cList = await _context.Set<T>().ToListAsync();
             return cList;
         }
-        public ResponseItems<T> GetFinalClassAndPage()
+
+        public async Task<ResponseItems<T>> GetFinalClassAndPage()
         {
             const int pageSize = 3;
 
@@ -96,7 +120,7 @@ namespace DataInfastructure.Responsitory
             return data;
         }
 
-        public T Update(Guid id, T c)
+        public async Task<T> Update(Guid id, T c)
         {
             var entity = _context.Set<T>().FirstOrDefault(x => x.Id == id);
             if (entity != null)
@@ -105,12 +129,11 @@ namespace DataInfastructure.Responsitory
             }
             return c;
         }
+
+        public  IQueryable<T> GetReponsitory()
+        {
+               return _context.Set<T>().AsQueryable();
+        }
     }
 
-
-    public class ResponseItems<T>
-    {
-        public int TotalPages { get; set; }
-        public List<T> ClassList { get; set; }
-    }
 }

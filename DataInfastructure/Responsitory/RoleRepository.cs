@@ -1,10 +1,9 @@
 ﻿using DataInfastructure.Model;
-using DataInfastructure;
 using Microsoft.EntityFrameworkCore;
-using DataInfastructure.IResponsitory;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using DataInfastructure.Interface;
 
 namespace DataInfastructure.Responsitory
 {
